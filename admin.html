@@ -31,6 +31,7 @@
           <th>ポイント</th>
           <th>免許</th>
           <th>変更</th>
+          <th>削除</th> <!-- 削除列を追加 -->
         </tr>
       </thead>
       <tbody></tbody>
@@ -38,7 +39,7 @@
   </div>
 
   <script>
-    const correctPin = "0655"; // 初期PIN（必要に応じて変更可）
+    const correctPin = "0655"; // 初期PIN
 
     function verifyPin() {
       const input = document.getElementById("adminPin").value;
@@ -79,6 +80,7 @@
             <td><input type="number" value="${data.points}" min="0" id="points-${id}" style="width:60px;"></td>
             <td id="license-${id}">${data.license}</td>
             <td><button onclick="updatePoints('${id}')">更新</button></td>
+            <td><button onclick="deleteResident('${id}')">削除</button></td> <!-- 削除ボタン -->
           `;
           tbody.appendChild(row);
         });
@@ -97,6 +99,20 @@
 
       document.getElementById(`license-${id}`).textContent = newLicense;
       alert("ポイントを更新しました。");
+    }
+
+    // 追加: 削除機能
+    function deleteResident(id) {
+      if (confirm("この住民を削除してもよろしいですか？")) {
+        db.ref("residents/" + id).remove()
+          .then(() => {
+            alert("住民を削除しました。");
+            loadResidents(); // 再読み込み
+          })
+          .catch(error => {
+            console.error("削除エラー:", error);
+          });
+      }
     }
   </script>
 </body>
