@@ -8,6 +8,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="firebase.js"></script>
+  <style>
+    /* 削除ボタン用のスタイル */
+    .delete-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .delete-btn:hover {
+      background-color: #e60000;
+    }
+  </style>
 </head>
 <body>
   <h1>篠山県役所：管理者パネル</h1>
@@ -31,7 +46,7 @@
           <th>ポイント</th>
           <th>免許</th>
           <th>変更</th>
-          <th>削除</th> <!-- 削除列を追加 -->
+          <th>削除</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -80,7 +95,7 @@
             <td><input type="number" value="${data.points}" min="0" id="points-${id}" style="width:60px;"></td>
             <td id="license-${id}">${data.license}</td>
             <td><button onclick="updatePoints('${id}')">更新</button></td>
-            <td><button onclick="deleteResident('${id}')">削除</button></td> <!-- 削除ボタン -->
+            <td><button class="delete-btn" onclick="deleteResident('${id}')">削除</button></td>
           `;
           tbody.appendChild(row);
         });
@@ -101,13 +116,12 @@
       alert("ポイントを更新しました。");
     }
 
-    // 追加: 削除機能
     function deleteResident(id) {
       if (confirm("この住民を削除してもよろしいですか？")) {
         db.ref("residents/" + id).remove()
           .then(() => {
             alert("住民を削除しました。");
-            loadResidents(); // 再読み込み
+            loadResidents();
           })
           .catch(error => {
             console.error("削除エラー:", error);
