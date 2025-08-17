@@ -1,0 +1,10 @@
+body { font-family:'Yu Gothic', sans-serif; background-color:#f4f4f4; margin:0; padding:0; text-align:center; }
+header { background-color:#003366; color:white; padding:15px 0; }
+main { margin:50px 20px; }
+.btn { display:inline-block; margin:10px; padding:12px 20px; background-color:#005bac; color:white; font-size:16px; border-radius:6px; text-decoration:none; transition:0.3s;}
+.btn:hover { background-color:#003f7f; }
+input, select { padding:5px; margin:5px; }
+button { padding:5px 10px; background-color:#005bac; color:white; border:none; border-radius:4px; cursor:pointer;}
+button[disabled] { background-color:#999; cursor:not-allowed;}
+.container { max-width:800px; margin:auto; text-align:left;}
+.section { background:white; padding:20px; margin:20px 0; border-radius:6px; box-shadow:0 0 5px rgba(0,0,0,0.1);}
