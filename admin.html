@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>管理者画面</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+</head>
+<body>
+<header><h1>管理者画面</h1></header>
+<div class="container section" id="adminDiv">
+  <h2>住民一覧・ポイント管理</h2>
+  <div id="residentList"></div>
+
+  <h2>立候補承認</h2>
+  <div id="pendingList"></div>
+
+  <h2>候補者集計</h2>
