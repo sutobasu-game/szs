@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>住民登録</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+</head>
+<body>
+<header><h1>住民登録</h1></header>
+<div class="container section">
+  <h2>情報を入力してください</h2>
+  <label>ディスコード名: <input type="text" id="discordName"></label><br>
+  <label>MCID: <input type="text" id="mcid"></label><br>
+  <button onclick="registerResident()">登録</button>
+</div>
+
+<script>
+function generateResidentId() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function registerResident() {
+  const discordName = document.getElementById("discordName").value.trim();
+  const mcid = document.getElementById("mcid").value.trim();
+  if(!discordName || !mcid) return alert("全て入力してください");
+
+  const id = generateResidentId();
+  db.ref("residents/"+id).set({
+    discordName: discordName,
+    mcid: mcid,
+    points: 0
+  });
+  alert("登録完了！ 住民番号: "+id);
+}
+</script>
+</body>
+</html>
