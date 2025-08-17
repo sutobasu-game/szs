@@ -10,11 +10,96 @@
 </head>
 <body>
 <header><h1>管理者画面</h1></header>
-<div class="container section" id="adminDiv">
-  <h2>住民一覧・ポイント管理</h2>
+<div class="container section">
+  <h2>住民一覧</h2>
   <div id="residentList"></div>
+</div>
 
-  <h2>立候補承認</h2>
-  <div id="pendingList"></div>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const role = urlParams.get('role') || 'coManager';
+const password = prompt("パスワードを入力してください");
 
-  <h2>候補者集計</h2>
+if((role==="admin" && password!=="0655") || (role==="coManager" && password!=="milk2025")) {
+  alert("パスワードが違います");
+  location.href="index.html";
+}
+
+// 運営チェック
+function toggleAdminCheck(id){
+  db.ref("residents/"+id+"/adminCheck").once("value").then(snap=>{
+    const val = snap.val() ? false : true;
+    db.ref("residents/"+id+"/adminCheck").set(val);
+    // 立候補マークを削除
+    if(val) db.ref("residents/"+id+"/candidate").set(false);
+    loadResidents();
+  });
+}
+
+// 職員チェック
+function toggleStaffCheck(id){
+  db.ref("residents/"+id+"/staffCheck").once("value").then(snap=>{
+    const val = snap.val() ? false : true;
+    db.ref("residents/"+id+"/staffCheck").set(val);
+    // 立候補マークを削除
+    if(val) db.ref("residents/"+id+"/candidate").set(false);
+    loadResidents();
+  });
+}
+
+function loadResidents(){
+  db.ref("residents").once("value", snap=>{
+    const list = document.getElementById("residentList");
+    list.innerHTML="";
+    snap.forEach(child=>{
+      const r = child.val();
+
+      // ポイントによる免許
+      let license="免停";
+      if(r.points>=3) license="木";
+      if(r.points>=6) license="石";
+      if(r.points>=9) license="銅";
+      if(r.points>=10) license="鉄";
+      if(r.points>=13) license="金";
+      if(r.points>=16) license="ダイヤ";
+      if(r.points>=20) license="ネザライト";
+
+      // マーク判定
+      let mark = "";
+      if(r.staffCheck) mark = "⚒";
+      else if(r.adminCheck) mark = "🔐";
+      else if(r.candidate) mark = (r.points>=20 && r.points<=29) ? "🎫" : "";
+
+      let html=`<div><b>${r.discordName}${mark}</b> (${r.mcid}) - 住民番号: ${child.key} - ポイント: <input type="number" value="${r.points}" id="points_${child.key}" style="width:50px"> - 免許: ${license}`;
+
+      if(role==="admin"){
+        html+=` <button onclick="updatePoints('${child.key}')">更新</button>`;
+        if(r.points>=20 && r.points<=29) html+=` <button onclick="toggleAdminCheck('${child.key}')">運営✔</button>`;
+        if(r.points>=20) html+=` <button onclick="toggleStaffCheck('${child.key}')">職員✔</button>`;
+      }
+
+      html+="</div>";
+      list.innerHTML+=html;
+    });
+  });
+}
+
+function updatePoints(id){
+  const val = parseInt(document.getElementById("points_"+id).value);
+  if(isNaN(val)) return alert("数字を入力してください");
+  db.ref("residents/"+id+"/points").set(val);
+
+  // ポイント20〜29で立候補初期化
+  if(val>=20 && val<=29){
+    db.ref("residents/"+id+"/candidate").set(true);
+  } else {
+    db.ref("residents/"+id+"/candidate").set(false);
+  }
+
+  loadResidents();
+}
+
+loadResidents();
+</script>
+</body>
+</html>
